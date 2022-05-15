@@ -10,7 +10,7 @@ bootstrap = Bootstrap()
 def create_app(config_name):
   app = Flask(__name__)
   
-  # initiliazing flask extensions
+  # initializing flask extensions
   db.init_app(app)
   bootstrap.init_app(app)
 
