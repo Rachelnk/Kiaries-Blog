@@ -39,3 +39,13 @@ def comment(post_id):
         new_comment.save_comments()
         return redirect(url_for('.comment', post_id = post_id))
     return render_template('comment.html', form =form, post = post,all_comments=all_comments)
+
+@main.route('/user/<name>')
+def profile(name):
+    user = User.query.filter_by(username = name).first()
+    user_id = current_user._get_current_object().id
+    posts = Blog_Post.query.filter_by(user_id = user_id).all()
+    if user is None:
+        abort(404)
+
+    return render_template("profile/profile.html", user = user,posts=posts)
