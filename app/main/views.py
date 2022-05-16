@@ -1,7 +1,7 @@
 from flask import render_template, request,redirect,url_for, abort
 from . import main
 from flask_login import login_required,current_user,login_user,logout_user
-from .forms import PostForm,CommentsForm, UpdateProfile
+from .forms import PostForm,CommentsForm, UpdateProfile, EditPostForm
 from ..models import User, Comment, Blog_Post
 from .. import db, photos
 
@@ -62,3 +62,17 @@ def updateprofile(name):
         user.save_user()
         return redirect(url_for('.profile',name = name))
     return render_template('profile/update.html',form =form)
+
+@main.route('/user/<name>/editpostform', methods = ['POST','GET'])
+@login_required
+def editpostform(name):
+    form = EditPostForm()
+    blogpost = Blog_Post.query.filter_by(username = name).first()
+    if blogpost == None:
+        abort(404)
+    if form.validate_on_submit():
+        blogpost.update_title = form.update_title.data
+        blogpost.update_content = form.update_content.data
+        blogpost.save_user()
+        return redirect(url_for('.profile',name = name))
+    return render_template('profile/post.html',form =form)
