@@ -17,3 +17,8 @@ class SubscriberForm(FlaskForm):
 class UpdateProfile(FlaskForm):
     bio = TextAreaField('Write a bit about yourself',validators=[InputRequired()])
     submit = SubmitField('Add Bio')
+class EditPost(FlaskForm):
+    update_title = StringField ('Title', validators= [InputRequired()])
+    update_content = TextAreaField('Content',validators=[InputRequired()])
+    submit = SubmitField('Edit Post')
+
