@@ -5,6 +5,16 @@ from .forms import RegForm,LoginForm
 from ..models import User
 from .. import db
 
+@auth.route('/signup', methods = ["GET","POST"])
+def signup():
+    form = RegForm()
+    if form.validate_on_submit():
+        user = User(email = form.email.data, username = form.username.data, password = form.password.data)
+        user.save_user()
+        # mailmessage(Welcome to OneMinutePitch,email/welcome_user,user.email,user=user)
+        return redirect(url_for('auth.login'))
+    return render_template('auth/signup.html', reg_form = form)
+
 @auth.route('/login', methods = ['GET','POST'])
 def login():
     form = LoginForm()
