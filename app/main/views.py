@@ -13,7 +13,7 @@ def index():
 
 @main.route('/create_new', methods = ['POST','GET'])
 @login_required
-def new_pitch():
+def new_post():
     form = PostForm
     if form.validate_on_submit():
         title = form.title.data
@@ -23,3 +23,19 @@ def new_pitch():
         new_post_object.save_post()
         return redirect(url_for('main.index'))
     return render_template('add_post.html', form = form)
+
+
+@main.route('/comment/<int:post_id>', methods = ['POST','GET'])
+@login_required
+def comment(post_id):
+    form = CommentsForm()
+    post = Blog_Post.query.get(post_id)
+    all_comments = Comment.query.filter_by(post_id = post_id).all()
+    if form.validate_on_submit():
+        comment = form.comment.data 
+        post_id = post_id
+        user_id = current_user._get_current_object().id
+        new_comment = Comment(comment = comment,user_id = user_id,post_id = post_id)
+        new_comment.save_comments()
+        return redirect(url_for('.comment', post_id = post_id))
+    return render_template('comment.html', form =form, post = post,all_comments=all_comments)
