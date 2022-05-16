@@ -2,7 +2,9 @@ from ensurepip import bootstrap
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
-from config import config_options
+from flask_login import LoginManager
+from flask_uploads import UploadSet, configure_uploads
+from config import config_options, IMAGES
 
 db = SQLAlchemy()
 bootstrap = Bootstrap()
