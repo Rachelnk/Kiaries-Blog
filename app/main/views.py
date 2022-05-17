@@ -2,26 +2,40 @@ from flask import render_template, request,redirect,url_for, abort
 from . import main
 from flask_login import login_required,current_user,login_user,logout_user
 from .forms import PostForm,CommentsForm, UpdateProfile, EditPostForm
-from ..models import User, Comment, Blog_Post
+from ..models import User, Comment, Blog_Post, Subscriber
 from .. import db
+from ..requests import get_random_quote
+from datetime import datetime
 #  photos
 
 @main.route('/')
 def index():
-    all_posts = Blog_Post.query.all()
+    posts = Blog_Post.query.all()
+    quote = get_random_quote()
     title = 'Home -  Welcome to Kiarie\'s Blog'
-    return render_template('index.html')
+    # if request.method == "POST":
+    #     new_sub = Subscriber(email = request.form.get("subscriber"))
+    #     db.session.add(new_sub)
+    #     db.session.commit()
+    #     welcome_message("Thank you for subscribing to Kiaries blog", 
+    #                     "email/welcome", new_sub.email)
+    return render_template('index.html' , posts = posts, quote = quote)
 
 @main.route('/create_new', methods = ['POST','GET'])
 @login_required
 def new_post():
-    form = PostForm
+    form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
-        content = form.post.data
+        content = form.content.data
         user_id = current_user
-        new_post_object = Blog_Post(content = content ,user_id=current_user._get_current_object().id,title=title)
+        post_by = current_user.username
+        new_post_object = Blog_Post(content = content ,user_id=current_user._get_current_object().id,title=title,
+        time_posted = datetime.now())
         new_post_object.save_post()
+        # subs = Subscriber.query.all()
+        # for subs in subs:
+
         return redirect(url_for('main.index'))
     return render_template('add_post.html', form = form)
 

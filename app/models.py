@@ -8,9 +8,10 @@ class User (db.Model, UserMixin):
   id = db.Column(db.Integer, primary_key =True)
   username = db.Column (db.String(255), unique = True, nullable = True)
   email = db.Column (db.String(255), unique = True, nullable = True)
-  bio = db.Column (db.String(255),nullable = True)
+  bio = db.Column (db.String(255),nullable = True)  
   profile_pic = db.Column (db.String(255),nullable = True)
-  pass_secure = db.column(db.String(255))
+  password_secure = db.Column(db.String(255))
+  
 
 
   @property
@@ -18,10 +19,10 @@ class User (db.Model, UserMixin):
     raise AttributeError('You cannot read the password attribute')
   @set_password.setter
   def password(self, password):
-    self.pass_secure = generate_password_hash(password)
+    self.password_secure = generate_password_hash(password)
   
   def verify_password(self, password):
-    return check_password_hash(self.pass_secure, password)
+    return check_password_hash(self.password_secure, password)
   def save_user(self):
       db.session.add(self)
       db.session.commit()
@@ -38,7 +39,7 @@ class Blog_Post(db.Model):
       '''
       __tablename__ = 'posts'
       id = db.Column(db.Integer, primary_key = True)
-      tile = db.Column(db.String(255), nullable = False)
+      title = db.Column(db.String(255), nullable = False)
       content = db.Column(db.Text(), nullable = False)
       time_posted = db.Column (db.DateTime, default=datetime.utcnow)
       user_id=db.Column(db.Integer, db.ForeignKey("users.id"))

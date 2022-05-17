@@ -7,7 +7,7 @@ from ..models import Blog_Post, Comment
 class PostForm(FlaskForm):
   title = StringField ('Title', validators= [InputRequired()])
   content = TextAreaField('Content',validators=[InputRequired()])
-  submit = SubmitField('Add Pitch')
+  submit = SubmitField('Add Post')
 
 class CommentsForm(FlaskForm):
     comment = TextAreaField('Comment on the post',validators=[InputRequired()])
