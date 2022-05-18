@@ -92,20 +92,37 @@ def updateprofile(name):
         user.save_user()
         return redirect(url_for('.profile',name = name))
     return render_template('profile/update.html',form =form)
-
-@main.route('/user/<name>/editpostform', methods = ['POST','GET'])
+@main.route('/blog/<blog_id>/update', methods = ['GET','POST'])
 @login_required
-def editpostform(name):
-    form = EditPostForm()
-    blogpost = Blog_Post.query.filter_by(username = name).first()
-    if blogpost == None:
-        abort(404)
+def updateblog(blog_id):
+    blog = Blog_Post.query.get(blog_id)
+    if blog.user != current_user:
+        abort(403)
+    form = PostForm()
     if form.validate_on_submit():
-        blogpost.update_title = form.update_title.data
-        blogpost.update_content = form.update_content.data
-        blogpost.save_user()
-        return redirect(url_for('.profile',name = name))
-    return render_template('profile/edit_blogpost.html',form =form)
+        blog.title = form.title.data
+        blog.content = form.content.data
+        db.session.commit()
+        flash("You have updated your Blog!")
+        return redirect(url_for('main.blog',id = blog.id)) 
+    if request.method == 'GET':
+        form.title.data = blog.title
+        form.content.data = blog.content
+    return render_template('add_postblog.html', form = form)
+
+# @main.route('/user/<name>/editpostform', methods = ['POST','GET'])
+# @login_required
+# def editpostform(name):
+#     form = EditPostForm()
+#     blogpost = Blog_Post.query.filter_by(username = name).first()
+#     if blogpost == None:
+#         abort(404)
+#     if form.validate_on_submit():
+#         blogpost.update_title = form.update_title.data
+#         blogpost.update_content = form.update_content.data
+#         blogpost.save_user()
+#         return redirect(url_for('.profile',name = name))
+#     return render_template('profile/edit_blogpost.html',form =form)
 
 # @main.route('/user/<name>/update/pic',methods= ['POST'])
 # @login_required

@@ -11,7 +11,7 @@ class User (db.Model, UserMixin):
   bio = db.Column (db.String(255),nullable = True)  
   profile_pic = db.Column (db.String(255),nullable = True)
   password_secure = db.Column(db.String(255))
-  posts = db.relationship('Blog_Post', backref='user', lazy=True)
+  blog_post = db.relationship('Blog_Post', backref='user', lazy='dynamic')
   comment = db.relationship('Comment' , backref = 'user', lazy = 'dynamic')
   
 
@@ -48,6 +48,7 @@ class Blog_Post(db.Model):
       comment = db.relationship('Comment' , backref = 'blog_post', lazy = 'dynamic')
 
       def save_post(self):
+      
           db.session.add(self)
           db.session.commit()
 
