@@ -11,6 +11,7 @@ class User (db.Model, UserMixin):
   bio = db.Column (db.String(255),nullable = True)  
   profile_pic = db.Column (db.String(255),nullable = True)
   password_secure = db.Column(db.String(255))
+  posts = db.relationship('Post', backref='author', lazy=True)
   
 
 

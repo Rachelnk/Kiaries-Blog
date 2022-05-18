@@ -10,8 +10,10 @@ from datetime import datetime
 
 @main.route('/')
 def index():
-    posts = Blog_Post.query.all()
+    page = request.args.get('page', 1, int)
+    posts = Blog_Post.query.order_by(Blog_Post.time_posted.desc()).paginate(page = page, per_page = 3)
     quote = get_random_quote()
+    
     title = 'Home -  Welcome to Kiarie\'s Blog'
     # if request.method == "POST":
     #     new_sub = Subscriber(email = request.form.get("subscriber"))
@@ -102,3 +104,9 @@ def editpostform(name):
 #         user.profile_pic_path = path
 #         db.session.commit()
 #     return redirect(url_for('main.profile',name=name))
+@main.route('/user/<string:username>')
+def user_posts(username):
+    user = User.query.filter_by(username=username).first()
+    page = request.args.get('page',1, type = int )
+    blogs = Blog_Post.query.filter_by(user=user).order_by(Blog_Post.posted.desc()).paginate(page = page, per_page = 4)
+    return render_template('userposts.html',blogs=blogs,user = user)
