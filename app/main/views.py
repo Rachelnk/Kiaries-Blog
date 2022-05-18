@@ -60,17 +60,11 @@ def blog(id):
 @main.route('/comment/<int:post_id>', methods = ['POST','GET'])
 @login_required
 def comment(post_id):
-    form = CommentsForm()
-    post = Blog_Post.query.get(post_id)
-    all_comments = Comment.query.filter_by(post_id = post_id).all()
-    if form.validate_on_submit():
-        comment = form.comment.data 
-        post_id = post_id
-        user_id = current_user._get_current_object().id
-        new_comment = Comment(comment = comment,user_id = user_id,post_id = post_id)
-        new_comment.save_comments()
-        return redirect(url_for('.comment', post_id = post_id))
-    return render_template('comment.html', form =form, post = post,all_comments=all_comments)
+    blog = Blog_Post.query.get(post_id)
+    comment =request.form.get('newcomment')
+    new_comment = Comment(comment = comment, user_id = current_user._get_current_object().id, post_id=post_id)
+    new_comment.save()
+    return redirect(url_for('main.blog',id = blog.id))
 
 @main.route('/user/<name>')
 def profile(name):
