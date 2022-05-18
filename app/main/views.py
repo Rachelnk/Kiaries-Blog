@@ -2,7 +2,7 @@ from flask import render_template, request,redirect,url_for, abort, flash
 from . import main
 from flask_login import login_required,current_user,login_user,logout_user
 from .forms import PostForm,CommentsForm, UpdateProfile, EditPostForm
-from ..models import User, Comment, Blog_Post, Subscriber
+from ..models import User, Comment, Blog_Post
 from .. import db
 from ..requests import get_random_quote
 from datetime import datetime
@@ -25,18 +25,13 @@ def index():
     quote = get_random_quote()
     
     title = 'Home -  Welcome to Kiarie\'s Blog'
-    # if request.method == "POST":
-    #     new_sub = Subscriber(email = request.form.get("subscriber"))
-    #     db.session.add(new_sub)
-    #     db.session.commit()
-    #     welcome_message("Thank you for subscribing to Kiaries blog", 
-    #                     "email/welcome", new_sub.email)
+    
     return render_template('index.html' , posts = posts, quote = quote)
 
 @main.route('/new_post', methods = ['POST','GET'])
 @login_required
 def new_post():
-    subscribers = Subscriber.query.all()
+    # subscribers = Subscriber.query.all()
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -46,8 +41,8 @@ def new_post():
         new_post_object = Blog_Post(content = content ,user_id=current_user._get_current_object().id,title=title,
         time_posted = datetime.now())
         new_post_object.save_post()
-        for subscriber in subscribers:
-            mail_message("New Blog Post","email/new_post",subscriber.email,blog=blog)
+        # for subscriber in subscribers:
+        #     mail_message("New Blog Post","email/new_post",subscriber.email,blog=blog)
         return redirect(url_for('main.index'))
         flash('You Posted a new Blog')      
 
@@ -140,11 +135,11 @@ def user_posts(username):
     page = request.args.get('page',1, type = int )
     blogs = Blog_Post.query.filter_by(user=user).order_by(Blog_Post.posted.desc()).paginate(page = page, per_page = 4)
     return render_template('userposts.html',blogs=blogs,user = user)
-@main.route('/subscribe',methods = ['POST','GET'])
-def subscribe():
-    email = request.form.get('subscriber')
-    new_subscriber = Subscriber(email = email)
-    new_subscriber.save_subscriber()
-    mail_message("Subscribed to Kiaries-Blog","email/welcome_subscriber",new_subscriber.email,new_subscriber=new_subscriber)
-    flash('Sucessfuly subscribed')
-    return redirect(url_for('main.index'))
+# @main.route('/subscribe',methods = ['POST','GET'])
+# def subscribe():
+#     email = request.form.get('subscriber')
+#     new_subscriber = Subscriber(email = email)
+#     new_subscriber.save_subscriber()
+#     mail_message("Subscribed to Kiaries-Blog","email/welcome_subscriber",new_subscriber.email,new_subscriber=new_subscriber)
+#     flash('Sucessfuly subscribed')
+#     return redirect(url_for('main.index'))
