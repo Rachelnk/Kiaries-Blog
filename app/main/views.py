@@ -34,7 +34,7 @@ def index():
 
 @main.route('/new_post', methods = ['POST','GET'])
 @login_required
-def new_blog():
+def new_post():
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -57,12 +57,12 @@ def blog(id):
     return render_template('blog.html',blog=blog,comments=comments)
 
 
-@main.route('/comment/<int:post_id>', methods = ['POST','GET'])
+@main.route('/comment/<int:blog_id>', methods = ['POST','GET'])
 @login_required
-def comment(post_id):
-    blog = Blog_Post.query.get(post_id)
+def comment(blog_id):
+    blog = Blog_Post.query.get(blog_id)
     comment =request.form.get('newcomment')
-    new_comment = Comment(comment = comment, user_id = current_user._get_current_object().id, post_id=post_id)
+    new_comment = Comment(comment = comment, user_id = current_user._get_current_object().id, blog_id=blog_id)
     new_comment.save()
     return redirect(url_for('main.blog',id = blog.id))
 
