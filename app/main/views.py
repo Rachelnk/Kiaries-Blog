@@ -1,4 +1,4 @@
-from flask import render_template, request,redirect,url_for, abort
+from flask import render_template, request,redirect,url_for, abort, flash
 from . import main
 from flask_login import login_required,current_user,login_user,logout_user
 from .forms import PostForm,CommentsForm, UpdateProfile, EditPostForm
@@ -7,6 +7,15 @@ from .. import db
 from ..requests import get_random_quote
 from datetime import datetime
 #  photos
+@main.route('/blog/<blog_id>/delete', methods = ['POST'])
+@login_required
+def delete_post(blog_id):
+    blog = Blog_Post.query.get(blog_id)
+    if blog.user != current_user:
+        abort(403)
+    blog.delete()
+    flash("You have deleted your Blog succesfully!")
+    return redirect(url_for('main.index'))
 
 @main.route('/')
 def index():
@@ -23,9 +32,9 @@ def index():
     #                     "email/welcome", new_sub.email)
     return render_template('index.html' , posts = posts, quote = quote)
 
-@main.route('/create_new', methods = ['POST','GET'])
+@main.route('/new_post', methods = ['POST','GET'])
 @login_required
-def new_post():
+def new_blog():
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -40,6 +49,12 @@ def new_post():
 
         return redirect(url_for('main.index'))
     return render_template('add_post.html', form = form)
+
+@main.route('/blog/<id>')
+def blog(id):
+    comments = Comment.query.filter_by(blog_id=id).all()
+    blog = Blog_Post.query.get(id)
+    return render_template('blog.html',blog=blog,comments=comments)
 
 
 @main.route('/comment/<int:post_id>', methods = ['POST','GET'])

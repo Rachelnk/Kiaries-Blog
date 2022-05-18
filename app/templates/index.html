@@ -21,33 +21,46 @@
 </header>
 
 <!-- Posts -->
-<h1 class="mb-3">Posted by {{ user.username }} ({{ posts.total }})</h1>
-    {% for post in posts.items %}
-        <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
-              <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
-            </div>
-            <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
+<div class="row">
+  <div class="col-md-8 ">
+      {% for blog in posts.items %}
+          <div class="container bg mb-2">
+              <hr>
+              <div class="row ">
+                  <div class="col-md-2 ">
+                          
+                          <p id="usern"><a href="{{url_for('main.user_posts',username = blog.user.username)}}"><span  style="color: blue"><strong>{{blog.user.username | title}}</strong></span> </a> </p> 
+                  </div>
+                  <div class="col-md-10 pr-4 d-justify userblog">
+                      <p>Posted on : {{blog.time_posted.strftime('%d-%m-%Y')}}</p>
+                      <h4><a href="{{url_for('main.blog',id = blog.id)}}">{{blog.title | upper}}</a></h4>
+                      <p>{{blog.content}}</p>
+                      <p> <a class="btn btn-sm btn-info" href="{{url_for('main.blog',id = blog.id)}}" > Comment</a> {{blog.comment.count()}} Comments</p>
+                      
+                  </div>
+              </div> 
+              <hr>
           </div>
-        </article>
-    {% endfor %}
-    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-      {% if page_num %}
-        {% if posts.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
-        {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
-        {% endif %}
-      {% else %}
-        ...
-      {% endif %}
-    {% endfor %}
-      
-    </div>
+             
+      {% endfor %}
+
+      {% for page_num in posts.iter_pages(left_edge = 1, right_edge = 1, left_current=1, right_current = 2) %}
+          {% if page_num %}
+              {% if posts.page == page_num %}
+                  <a href="{{url_for('main.index',page = page_num)}}" class="btn btn-sm btn-info mb-2">{{ page_num }}</a>
+              {% else%}
+              <a href="{{url_for('main.index',page = page_num)}}" class="btn btn-sm btn-outline-info mb-2">{{ page_num }}</a>
+              {% endif %}
+          {% else%}
+              ...
+          {% endif %}
+      {% endfor %}  
+
   </div>
+  <!-- <div class="col-md-4">
+      
+  </div> -->
+</div>
+</div>
 </div>
 {% endblock %}
