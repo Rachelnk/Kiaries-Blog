@@ -6,8 +6,9 @@ class Config:
     
     SECRET_KEY = os.urandom(32)
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://kiarie:rayray@localhost/blog'
+    
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
+    # SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://kiarie:rayray@localhost/blog'
     
     # UPLOADED_PHOTOS_DEST ='app/static/photos'
 
@@ -27,8 +28,7 @@ class ProdConfig(Config):
     Args:
         Config: The parent configuration class with General configuration settings
     '''
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://kiarie:rayray@localhost/blog'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)    
 
 class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://kiarie:rayray@localhost/blog_test'
