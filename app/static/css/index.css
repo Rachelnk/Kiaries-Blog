@@ -1,3 +1,9 @@
-/* header {
-  background-image: url(../photos/headerbck1.jpg);
-} */
+header {
+  background-image: url("../photos/headerbck1.jpg");
+  background-size: cover;
+  background-position: center center;
+  text-align: right;
+  background-repeat: no-repeat;
+  height: 90vh;
+  color: black;
+}

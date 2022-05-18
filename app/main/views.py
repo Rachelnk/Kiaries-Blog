@@ -91,7 +91,7 @@ def updateprofile(name):
         user.bio = form.bio.data
         user.save_user()
         return redirect(url_for('.profile',name = name))
-    return render_template('profile/update.html',form =form)
+    return render_template('profile/updateprofile.html',form =form)
 @main.route('/blog/<blog_id>/update', methods = ['GET','POST'])
 @login_required
 def updateblog(blog_id):
@@ -108,7 +108,7 @@ def updateblog(blog_id):
     if request.method == 'GET':
         form.title.data = blog.title
         form.content.data = blog.content
-    return render_template('add_postblog.html', form = form)
+    return render_template('add_post.html', form = form)
 
 # @main.route('/user/<name>/editpostform', methods = ['POST','GET'])
 # @login_required
