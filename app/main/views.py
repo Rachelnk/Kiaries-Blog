@@ -6,6 +6,7 @@ from ..models import User, Comment, Blog_Post, Subscriber
 from .. import db
 from ..requests import get_random_quote
 from datetime import datetime
+from ..email import mail_message
 #  photos
 @main.route('/blog/<blog_id>/delete', methods = ['POST'])
 @login_required
@@ -35,6 +36,7 @@ def index():
 @main.route('/new_post', methods = ['POST','GET'])
 @login_required
 def new_post():
+    subscribers = Subscriber.query.all()
     form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -44,8 +46,10 @@ def new_post():
         new_post_object = Blog_Post(content = content ,user_id=current_user._get_current_object().id,title=title,
         time_posted = datetime.now())
         new_post_object.save_post()
-        # subs = Subscriber.query.all()
-        # for subs in subs:
+        for subscriber in subscribers:
+            mail_message("New Blog Post","email/new_post",subscriber.email,blog=blog)
+        return redirect(url_for('main.index'))
+        flash('You Posted a new Blog')      
 
         return redirect(url_for('main.index'))
     return render_template('add_post.html', form = form)
@@ -119,3 +123,11 @@ def user_posts(username):
     page = request.args.get('page',1, type = int )
     blogs = Blog_Post.query.filter_by(user=user).order_by(Blog_Post.posted.desc()).paginate(page = page, per_page = 4)
     return render_template('userposts.html',blogs=blogs,user = user)
+@main.route('/subscribe',methods = ['POST','GET'])
+def subscribe():
+    email = request.form.get('subscriber')
+    new_subscriber = Subscriber(email = email)
+    new_subscriber.save_subscriber()
+    mail_message("Subscribed to Kiaries-Blog","email/welcome_subscriber",new_subscriber.email,new_subscriber=new_subscriber)
+    flash('Sucessfuly subscribed')
+    return redirect(url_for('main.index'))
