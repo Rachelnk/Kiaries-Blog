@@ -1,7 +1,7 @@
 # Kiaries-Blog
 
 ## Description
-##### This is a blog web application whereby the users can add posts about any topic and comment on other posts. The users also have the ability to delete offensive posts under their posts.
+##### This is a blog web application whereby the users can add posts about any topic and comment on other posts. The users also have the ability to delete offensive comments under their posts.
 
 ## Authors
 #### Rachel Kiarie
